@@ -30,8 +30,8 @@ export class TaskService{
     /**
      * Return the list of user's tasks     
      */
-    static list_tasks() {
+    static list_tasks(user_id) {
         //Return all tasks
-        return Task.find({}).exec();
+        return Task.find({user_id : user_id}).exec();
     }
 }

@@ -62,13 +62,19 @@ export class TaskController {
      * @param {*} req 
      * @param {*} res 
      */
-    static list_tasks(req, res) {      
-        TaskService.list_tasks().then(tasks=>{
-         console.log("liste of tasks : ", tasks);
-            res.status(200).send(tasks);
-         },(error)=>{
-            console.log(error);
-            res.status(400).send("Error while retrieving data!");
-         });
+    static list_tasks(req, res) {     
+        let user_id = req.params.id;
+        if(user_id){
+         console.log("user_id : ", user_id);
+         TaskService.list_tasks(user_id).then(tasks=>{
+            console.log("liste of tasks : ", tasks);
+               res.status(200).send(tasks);
+            },(error)=>{
+               console.log(error);
+               res.status(400).send("Error while retrieving data!");
+            });
+        }else{
+            console.log('Id of the user is required');
+        }      
     }
 }
