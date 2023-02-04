@@ -4,6 +4,7 @@ import { router as taskRoutes } from './routes/tasks.js';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import { body } from 'express-validator';
 
 const app = express();
 dotenv.config({ path: 'config.env' });
@@ -14,6 +15,7 @@ const PORT = process.env.PORT;
 app.use(express.json()) // for parsing application/json
 app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 app.use(cors())
+app.use(body('email').isEmail(), body('password').isLength({min : 4}));
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended : true}));
 
