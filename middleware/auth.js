@@ -6,10 +6,9 @@ const verifyToken = (req, res, next) => {
   const token =  req.body.token || req.query.token || req.headers["authorization"];
 
   if (!token) {
-    return res.status(403).send("A token is required for authentication");
+    return res.status(403).send("A token is required to access this resource ");
   }
-  try {
-    console.log(token);
+  try {    
     const decoded = jwt.verify(token, config.TOKEN_KEY);    
     req.user = decoded;
   } catch (err) {

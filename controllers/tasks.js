@@ -8,17 +8,19 @@ export class TaskController {
      * @param {*} res 
      */
     static save_task(req, res) {
-         //Creating task         
-        //  console.log(req.body);
+         //Creating task    
+        //  console.log(req.body);        
          if(!req.body){
-            res.status(400).send("Task to insert can't be empty!");
+            res.status(400).send({message : "Task to insert can't be empty!"});
             return;
          }
 
-        //  task = new Task(req.body);
+         let task = new Task(req.body);
 
-        //  task.validate();
-
+         let error = task.validateSync();
+         if(error){            
+            throw error;
+         }
          TaskService.save_task(req.body).then(task=>{
             res.status(200).send(task);
          },(error)=>{
@@ -31,17 +33,13 @@ export class TaskController {
      * @param {*} req 
      * @param {*} res 
      */
-    static delete_task(req, res) {
+    static async delete_task(req, res) {
         let task_id = req.params.id;        
         if(task_id){
-            TaskService.delete_task(task_id).then(task=>{               
-                res.status(201).send({message : "Task deleted successfully"});
-             },(error)=>{
-                console.log(error);
-                res.status(400).send("Error while deleting the task!");
-             });
+            await TaskService.delete_task(task_id);
+            res.status(200).send({message : "Task deleted successfully"});
         }else{
-            res.status(400).send("The id of the task is required!");
+            throw new Error("The id of the task to delete is required!");
         }      
     }
     /**
@@ -49,32 +47,23 @@ export class TaskController {
      * @param {*} req 
      * @param {*} res 
      */
-    static update_task(req, res) {    
-        TaskService.update_task(req.params.id, req.body).then(task=>{
-            res.status(200).send({message : "Task updated successfully"});
-         },(error)=>{
-            console.log(error);
-            res.status(400).send("Error while updating the task!");
-         });
+    static async update_task(req, res) {
+        await TaskService.update_task(req.params.id, req.body);
+        res.status(200).send({message : "Task updated successfully"});
     }
     /**
      * Return the list of user's tasks
      * @param {*} req 
      * @param {*} res 
      */
-    static list_tasks(req, res) {     
+    static async list_tasks(req, res) {     
         let user_id = req.params.id;
         if(user_id){
          console.log("user_id : ", user_id);
-         TaskService.list_tasks(user_id).then(tasks=>{
-            console.log("liste of tasks : ", tasks);
-               res.status(200).send(tasks);
-            },(error)=>{
-               console.log(error);
-               res.status(400).send("Error while retrieving data!");
-            });
+         let tasks = await TaskService.list_tasks(user_id);
+         return res.status(200).send(tasks);
         }else{
-            console.log('Id of the user is required');
+            throw new Error('The id of the user is required to get his todo tasks');
         }      
     }
 }

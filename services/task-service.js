@@ -24,7 +24,6 @@ export class TaskService{
      */
     static update_task(task_id, task) {
         //Updating task
-        console.log("task_id", task_id);
         return Task.updateOne({_id : task_id}, task).exec();
     }
     /**
